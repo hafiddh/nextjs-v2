@@ -11,12 +11,12 @@ export default async function Home() {
       <Navbar />
       <h1>Hello World</h1>
 
-      {/* <h2>Client Session</h2>
+      <h2>Client Session</h2>
       <User />
       <h2>Server Session</h2>
       {JSON.stringify(session)}
 
-      <h2>GET DATA FROM OUTSIDE</h2>
+      {/* <h2>GET DATA FROM OUTSIDE</h2>
       <GetFromAPI /> */}
     </>
   )

@@ -13,11 +13,43 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Check, Trash2Icon, X } from "lucide-react"
 import { useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
 
 const DeletePegawai = (idPeg: any) => {
+    const { toast } = useToast()
+    const router = useRouter()
+
     const [open, setOpen] = useState(false)
 
     const pegID = idPeg.idPeg
+
+    const deleteHandler = async (id: String) => {
+
+        const response = await fetch(`/api/pegawai/${id}`, {
+            method: 'DELETE',
+        }).then(res => {
+            if (res.ok) {
+                toast({
+                    title: "Sukses!",
+                    description: "Data dihapus!.",
+                    variant: 'default',
+                })
+ 
+                router.refresh()
+
+                setOpen(false)
+            } else {
+                return res.text().then(text => { throw new Error(text) })
+            }
+        }).catch(err => {
+            toast({
+                title: "Error!",
+                description: "" + err,
+                variant: 'destructive',
+            })
+        });
+    }
 
     return (
         <>
@@ -34,7 +66,7 @@ const DeletePegawai = (idPeg: any) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel><X /></AlertDialogCancel>
-                        <AlertDialogAction><Check /></AlertDialogAction>
+                        <AlertDialogAction onClick={() => deleteHandler(pegID)}><Check /></AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

@@ -1,6 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import * as z from "zod"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { verifyJwt } from "@/lib/jwt";
 
 const FormSchema = z.object({
     nip: z
@@ -18,7 +21,7 @@ const FormSchema = z.object({
         .z.string().transform((str) => new Date(str)),
 })
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
         const Pegawai = await db.pegawai.findMany()
 
@@ -28,7 +31,8 @@ export async function GET() {
 
     } catch (error) {
         return NextResponse.json({
-            message: "Server error."
+            message: "Server error.",
+            error
         }, {
             status: 500
         })
@@ -36,6 +40,29 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+
+    const session = await getServerSession(authOptions)
+    const token = req.headers.get('token')
+
+    if (!token && !session) {
+        return NextResponse.json({
+            status: "Unauthorized"
+        }, {
+            status: 401
+        })
+    }
+
+    if (token) {
+        if (verifyJwt(token)) {
+        } else {
+            return NextResponse.json({
+                status: "Invalid Token"
+            }, {
+                status: 401
+            })
+        }
+    }
+
     try {
         const body = await req.json()
         const { nip, nama, golongan, tgl_lahir } = FormSchema.parse(body)
@@ -70,9 +97,9 @@ export async function POST(req: Request) {
         })
 
     } catch (error) {
-        // console.log(error)
         return NextResponse.json({
-            message: "Server error."
+            message: "Server error.",
+            error
         }, {
             status: 500
         })

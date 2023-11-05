@@ -64,7 +64,7 @@ const PegawaiCreateForm = ({ setOpen }: any) => {
     })
 
     const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-        console.log(values)
+        // console.log(values)
         const response = await fetch('/api/pegawai', {
             method: 'POST',
             headers: {
