@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx'
 import { Button } from './ui/button'
 import { Download } from 'lucide-react'
 
-const ExcelBtn = ({ data = [], fileName }) => {
+const ExcelBtn = ({ data = [], fileName }: any) => {
     return (
         <>
             <Button className=" ml-auto" size='icon'

@@ -1,4 +1,4 @@
-import GetFromAPI from "@/components/GetFromAPI"
+// import GetFromAPI from "@/components/GetFromAPI"
 import Navbar from "@/components/Navbar"
 import User from "@/components/User"
 import { authOptions } from "@/lib/auth"

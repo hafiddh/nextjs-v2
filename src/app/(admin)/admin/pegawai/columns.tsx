@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, DeleteIcon, Edit, MoreVertical, TrashIcon } from "lucide-react"
+import { useState } from "react"
+
 
 export type Pegawai = {
     id: string
@@ -45,7 +47,19 @@ export const columns: ColumnDef<Pegawai>[] = [
     },
     {
         accessorKey: "golongan",
-        header: () => <div className="text-center">Golongan</div>,
+        header: ({ column }) => {
+            return (
+                <div className="">
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Golongan
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
+            )
+        },
         cell: ({ row }) => {
             return <div className="text-center">{row.getValue("golongan")}</div>
         }
@@ -68,7 +82,7 @@ export const columns: ColumnDef<Pegawai>[] = [
         cell: ({ row }) => {
             const tanggal = new Date(row.getValue("tgl_lahir"));
             const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-            const tanggal_terformat = tanggal.toLocaleDateString('id-ID', options);
+            const tanggal_terformat = tanggal.toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
 
             return <div className="text-center">{tanggal_terformat}</div>

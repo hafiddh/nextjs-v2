@@ -32,7 +32,8 @@ const FormSchema = z.object({
         .string()
         .min(1, 'Golongan dibutuhkan'),
     tgl_lahir: z
-        .z.string().transform((str) => new Date(str)),
+        .string()
+        .min(3, 'Tanggal lahir dibutuhkan'),
 })
 
 const PegawaiCreateForm = ({ setOpen }: any) => {
@@ -77,7 +78,7 @@ const PegawaiCreateForm = ({ setOpen }: any) => {
                 tgl_lahir: values.tgl_lahir,
             })
         }).then(res => {
-            if (res.ok) { 
+            if (res.ok) {
 
                 toast({
                     title: "Sukses!",
@@ -163,7 +164,7 @@ const PegawaiCreateForm = ({ setOpen }: any) => {
                                 <FormItem className="flex flex-col">
                                     <FormLabel>Tanggal Lahir</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Nama" type="date" {...field} />
+                                        <Input type="date" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

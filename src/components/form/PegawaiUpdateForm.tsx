@@ -33,7 +33,8 @@ const FormSchema = z.object({
         .string()
         .min(1, 'Golongan dibutuhkan'),
     tgl_lahir: z
-        .z.string().transform((str) => new Date(str)),
+        .string()
+        .min(3, 'Tanggal lahir dibutuhkan'),
 })
 
 
@@ -68,10 +69,7 @@ const PegawaiUpdateForm = ({ setOpen, idPeg }: any) => {
                 .then((res) => res.json())
                 .then(data => {
                     const tanggal = new Date(data.tgl_lahir);
-                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                    const tanggal_terformat = tanggal.toLocaleDateString('fr-CA', options);
-
-                    console.log(tanggal_terformat);
+                    const tanggal_terformat = tanggal.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
                     return {
                         nip: data.nip,
@@ -82,58 +80,42 @@ const PegawaiUpdateForm = ({ setOpen, idPeg }: any) => {
                 })
         }
     })
-
-    useEffect(() => {
-        fetch(`/api/pegawai/${idPeg}`)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-            })
-            .catch(err => {
-                toast({
-                    title: "Error!",
-                    description: "" + err,
-                    variant: 'destructive',
-                })
-            });
-    }, [])
-
+  
     const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-        console.log(values)
-        // const response = await fetch('/api/pegawai', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         nip: values.nip,
-        //         nama: values.nama,
-        //         golongan: values.golongan,
-        //         tgl_lahir: values.tgl_lahir,
-        //     })
-        // }).then(res => {
-        //     if (res.ok) {
+        // console.log(values)
+        const response = await fetch(`/api/pegawai/${idPeg}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nip: values.nip,
+                nama: values.nama,
+                golongan: values.golongan,
+                tgl_lahir: values.tgl_lahir,
+            })
+        }).then(res => {
+            if (res.ok) {
 
-        //         toast({
-        //             title: "Sukses!",
-        //             description: "Data berhasil ditambahkan!.",
-        //             variant: 'default',
-        //         })
+                toast({
+                    title: "Sukses!",
+                    description: "Data diubah!.",
+                    variant: 'default',
+                })
 
-        //         router.replace('/admin/pegawai')
-        //         router.refresh()
+                router.refresh()
 
-        //         setOpen(false)
-        //     } else {
-        //         return res.text().then(text => { throw new Error(text) })
-        //     }
-        // }).catch(err => {
-        //     toast({
-        //         title: "Error!",
-        //         description: "" + err,
-        //         variant: 'destructive',
-        //     })
-        // });
+                setOpen(false)
+            } else {
+                return res.text().then(text => { throw new Error(text) })
+            }
+        }).catch(err => {
+            toast({
+                title: "Error!",
+                description: "" + err,
+                variant: 'destructive',
+            })
+        });
     }
 
     return (
@@ -148,7 +130,7 @@ const PegawaiUpdateForm = ({ setOpen, idPeg }: any) => {
                                 <FormItem>
                                     <FormLabel>NIP</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="NIP" {...field} type="number" />
+                                        <Input placeholder="NIP" {...field} readOnly type="number" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -198,7 +180,7 @@ const PegawaiUpdateForm = ({ setOpen, idPeg }: any) => {
                                 <FormItem className="flex flex-col">
                                     <FormLabel>Tanggal Lahir</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Nama" type="date" {...field} />
+                                        <Input type="date" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
